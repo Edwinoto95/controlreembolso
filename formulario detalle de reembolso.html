@@ -1,0 +1,13 @@
+<form method="POST" action="/detalle_reembolso/guardar">
+  <h5>Registrar Detalle de Reembolso</h5>
+  <select name="id_reembolso" required>
+    <option value="">Seleccione Reembolso</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <select name="id_gasto" required>
+    <option value="">Seleccione Gasto</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <input type="number" name="monto_aprobado" step="0.01" placeholder="Monto aprobado" required>
+  <button type="submit">Guardar</button>
+</form>
