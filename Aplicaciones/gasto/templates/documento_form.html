@@ -1,0 +1,140 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}{{ accion }} Documento{% endblock %}
+
+{% block content %}
+<style>
+  .form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .error-text {
+    color: red;
+    font-size: 0.875em;
+    display: none;
+  }
+</style>
+
+<div class="form-container">
+  <h2 class="mb-4 text-center">{{ accion }} Documento</h2>
+
+  <form id="documentoForm" method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_gasto" class="form-label">Gasto:</label>
+      <select class="form-select" id="id_gasto" name="id_gasto" required>
+        <option value="">-- Selecciona gasto --</option>
+        {% for gasto in gastos %}
+          <option value="{{ gasto.id_gasto }}"
+            {% if documento and documento.id_gasto.id_gasto == gasto.id_gasto %}selected{% endif %}>
+            {{ gasto.descripcion }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="error-text" id="error-id_gasto">Por favor, selecciona un gasto.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="nombre_archivo" class="form-label">Nombre del archivo:</label>
+      <input type="text" class="form-control" id="nombre_archivo" name="nombre_archivo" 
+        value="{{ documento.nombre_archivo|default_if_none:'' }}" required>
+      <div class="error-text" id="error-nombre_archivo">Por favor, ingresa el nombre del archivo.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="tipo" class="form-label">Tipo:</label>
+      <input type="text" class="form-control" id="tipo" name="tipo" 
+        value="{{ documento.tipo|default_if_none:'' }}" required>
+      <div class="error-text" id="error-tipo">Por favor, ingresa el tipo.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="ruta_archivo" class="form-label">Ruta del archivo:</label>
+      <input type="text" class="form-control" id="ruta_archivo" name="ruta_archivo" 
+        value="{{ documento.ruta_archivo|default_if_none:'' }}" required>
+      <div class="error-text" id="error-ruta_archivo">Por favor, ingresa la ruta del archivo.</div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">{{ accion }}</button>
+      <a href="{% url 'documentos_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.getElementById('documentoForm').addEventListener('submit', function(event){
+    let valid = true;
+
+    // Gasto
+    const idGasto = document.getElementById('id_gasto');
+    const errorIdGasto = document.getElementById('error-id_gasto');
+    if(!idGasto.value){
+      errorIdGasto.style.display = 'block';
+      idGasto.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorIdGasto.style.display = 'none';
+      idGasto.classList.remove('is-invalid');
+    }
+
+    // Nombre archivo
+    const nombreArchivo = document.getElementById('nombre_archivo');
+    const errorNombreArchivo = document.getElementById('error-nombre_archivo');
+    if(!nombreArchivo.value.trim()){
+      errorNombreArchivo.style.display = 'block';
+      nombreArchivo.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorNombreArchivo.style.display = 'none';
+      nombreArchivo.classList.remove('is-invalid');
+    }
+
+    // Tipo
+    const tipoInput = document.getElementById('tipo');
+    const errorTipo = document.getElementById('error-tipo');
+    if(!tipoInput.value.trim()){
+      errorTipo.style.display = 'block';
+      tipoInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorTipo.style.display = 'none';
+      tipoInput.classList.remove('is-invalid');
+    }
+
+    // Ruta archivo
+    const rutaArchivo = document.getElementById('ruta_archivo');
+    const errorRutaArchivo = document.getElementById('error-ruta_archivo');
+    if(!rutaArchivo.value.trim()){
+      errorRutaArchivo.style.display = 'block';
+      rutaArchivo.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorRutaArchivo.style.display = 'none';
+      rutaArchivo.classList.remove('is-invalid');
+    }
+
+    if(!valid){
+      event.preventDefault();
+    }
+  });
+
+  // Validación dinámica para ocultar errores mientras se escribe o selecciona
+  ['id_gasto', 'nombre_archivo', 'tipo', 'ruta_archivo'].forEach(function(id){
+    const element = document.getElementById(id);
+    const errorElement = document.getElementById('error-' + id);
+    
+    element.addEventListener(id === 'id_gasto' ? 'change' : 'input', function(){
+      if(this.value.trim() !== ''){
+        errorElement.style.display = 'none';
+        this.classList.remove('is-invalid');
+      }
+    });
+  });
+</script>
+{% endblock %}
