@@ -1,0 +1,23 @@
+from django.db.models import Sum, Count
+from django.utils.timezone import now
+from datetime import timedelta
+from .models import Usuario, Gasto
+
+def dashboard_kpi(request):
+    total_usuarios = Usuario.objects.count()
+    total_gastos = Gasto.objects.aggregate(total=Sum('monto'))['total'] or 0
+
+    gastos_mensuales = (
+        Gasto.objects
+        .filter(fecha_gasto__gte=now() - timedelta(days=365))
+        .extra({'mes': "strftime('%%Y-%%m', fecha_gasto)"})
+        .values('mes')
+        .annotate(total=Sum('monto'))
+        .order_by('mes')
+    )
+
+    return render(request, 'app/dashboard_kpi.html', {
+        'total_usuarios': total_usuarios,
+        'total_gastos': total_gastos,
+        'gastos_mensuales': gastos_mensuales,
+    })
