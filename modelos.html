@@ -1,0 +1,18 @@
+
+ # app/models.py
+from django.db import models
+
+class Usuario(models.Model):
+    nombre = models.CharField(max_length=100)
+    correo = models.EmailField()
+    departamento = models.CharField(max_length=100, null=True, blank=True)
+    fecha_registro = models.DateField()
+
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=100)
+
+class Gasto(models.Model):
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_gasto = models.DateField()
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
