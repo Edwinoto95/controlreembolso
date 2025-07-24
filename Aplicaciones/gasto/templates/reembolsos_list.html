@@ -1,0 +1,132 @@
+{% extends 'plantilla.html' %}
+
+
+{% block title %}Reembolsos{% endblock %}
+
+
+{% block content %}
+<h2>Reembolsos</h2>
+<a href="{% url 'reembolso_create' %}" 
+   style="display:inline-block;
+          background-color:#28a745;
+          color:#fff;
+          padding:8px 16px;
+          border-radius:4px;
+          text-decoration:none;
+          font-weight:600;
+          margin-bottom:12px;
+          transition: background-color 0.3s ease;"
+   onmouseover="this.style.backgroundColor='#1e7e34';"
+   onmouseout="this.style.backgroundColor='#28a745';">
+  Crear nuevo reembolso
+</a>
+<table id="reembolsos" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha de Solicitud</th>
+            <th>Fecha Creación</th>
+            <th>Fecha Actualización</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in reembolsos %}
+        <tr>
+            <td>{{ r.id_reembolso }}</td>
+            <td>{{ r.id_usuario.nombre }}</td>
+            <td>{{ r.total }}</td>
+            <td>{{ r.estado }}</td>
+            <td>{{ r.fecha_solicitud }}</td>
+            <td>{{ r.fecha_creacion }}</td>
+            <td>{{ r.fecha_actualizacion }}</td>
+            <td>
+                <a href="{% url 'reembolso_edit' r.id_reembolso %}" 
+                   style="display:inline-block;
+                          background-color:#ffc107;
+                          color:#212529;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          margin-right:8px;
+                          cursor:pointer;
+                          transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#e0a800';"
+                   onmouseout="this.style.backgroundColor='#ffc107';">
+                   Editar
+                </a>
+                <a href="#" class="btn-eliminar" data-url="{% url 'reembolso_delete' r.id_reembolso %}" 
+                   style="display:inline-block;
+                          background-color:#dc3545;
+                          color:#fff;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          cursor:pointer;
+                          transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#a71d2a';"
+                   onmouseout="this.style.backgroundColor='#dc3545';">
+                   Eliminar
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+$(document).ready(function() {
+    // Inicializar DataTable con orden descendente por ID (columna 0)
+    var table = $('#reembolsos').DataTable({
+        "order": [[0, "desc"]]
+    });
+
+
+    // Mostrar mensajes de éxito con iziToast
+    {% if messages %}
+        {% for message in messages %}
+            iziToast.success({
+                title: '¡Listo!',
+                message: '{{ message }}',
+                position: 'topRight'
+            });
+        {% endfor %}
+    {% endif %}
+
+
+    // Confirmación de eliminación con iziToast
+    $('.btn-eliminar').on('click', function(e){
+        e.preventDefault();
+        var url = $(this).data('url');
+
+
+        iziToast.question({
+            timeout: 7000,
+            close: false,
+            overlay: true,
+            displayMode: 'once',
+            title: '¿Estás seguro?',
+            message: 'Esta acción no se puede deshacer.',
+            position: 'center',
+            buttons: [
+                ['<button>Eliminar</button>', function(instance, toast){
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    window.location.href = url;
+                }, true],
+                ['<button>Cancelar</button>', function(instance, toast){
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                }]
+            ]
+        });
+    });
+});
+</script>
+{% endblock %}

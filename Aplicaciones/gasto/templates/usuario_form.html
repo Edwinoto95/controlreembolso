@@ -1,0 +1,166 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}{{ accion }} Usuario{% endblock %}
+
+{% block content %}
+<style>
+  .form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .error-text {
+    color: red;
+    font-size: 0.875em;
+    display: none;
+  }
+</style>
+
+<div class="form-container">
+  <h2 class="mb-4 text-center">{{ accion }} Usuario</h2>
+
+  <form id="usuarioForm" method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre:</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required 
+        value="{{ usuario.nombre|default:'' }}">
+      <div class="error-text" id="error-nombre">Por favor, ingresa el nombre.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="correo" class="form-label">Correo:</label>
+      <input type="email" class="form-control" id="correo" name="correo" required 
+        value="{{ usuario.correo|default:'' }}">
+      <div class="error-text" id="error-correo">Por favor, ingresa un correo válido.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="departamento" class="form-label">Departamento:</label>
+      <select class="form-select" id="departamento" name="departamento" required>
+        <option value="">-- Selecciona departamento --</option>
+        <option value="Ventas" {% if usuario.departamento == "Ventas" %}selected{% endif %}>Ventas</option>
+        <option value="RRHH" {% if usuario.departamento == "RRHH" %}selected{% endif %}>RRHH</option>
+        <option value="Contabilidad" {% if usuario.departamento == "Contabilidad" %}selected{% endif %}>Contabilidad</option>
+        <option value="TI" {% if usuario.departamento == "TI" %}selected{% endif %}>TI</option>
+      </select>
+      <div class="error-text" id="error-departamento">Por favor, selecciona un departamento.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="fecha_registro" class="form-label">Fecha de registro:</label>
+      <input type="date" class="form-control" id="fecha_registro" name="fecha_registro" 
+        value="{{ usuario.fecha_registro|default:'' }}" required readonly>
+      <div class="error-text" id="error-fecha_registro">La fecha de registro debe ser la fecha actual.</div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">{{ accion }}</button>
+      <a href="{% url 'usuarios_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function(){
+    const fechaInput = document.getElementById('fecha_registro');
+    const today = new Date().toISOString().split('T')[0];
+    // Si no viene fecha del backend, colocar hoy
+    if(!fechaInput.value){
+      fechaInput.value = today;
+    }
+  })();
+
+  document.getElementById('usuarioForm').addEventListener('submit', function(event){
+    let valid = true;
+
+    // Nombre
+    const nombreInput = document.getElementById('nombre');
+    const errorNombre = document.getElementById('error-nombre');
+    if(!nombreInput.value.trim()){
+      errorNombre.style.display = 'block';
+      nombreInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorNombre.style.display = 'none';
+      nombreInput.classList.remove('is-invalid');
+    }
+
+    // Correo
+    const correoInput = document.getElementById('correo');
+    const errorCorreo = document.getElementById('error-correo');
+    // Validación simple de email con HTML5 (pero igual JS valida que contenga texto y @)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!correoInput.value.trim() || !emailPattern.test(correoInput.value.trim())){
+      errorCorreo.style.display = 'block';
+      correoInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorCorreo.style.display = 'none';
+      correoInput.classList.remove('is-invalid');
+    }
+
+    // Departamento
+    const departamentoInput = document.getElementById('departamento');
+    const errorDepartamento = document.getElementById('error-departamento');
+    if(!departamentoInput.value){
+      errorDepartamento.style.display = 'block';
+      departamentoInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorDepartamento.style.display = 'none';
+      departamentoInput.classList.remove('is-invalid');
+    }
+
+    // Fecha registro — debe ser hoy
+    const fechaInput = document.getElementById('fecha_registro');
+    const errorFecha = document.getElementById('error-fecha_registro');
+    const fechaVal = fechaInput.value;
+    const today = new Date().toISOString().split('T')[0];
+    if(fechaVal !== today){
+      errorFecha.style.display = 'block';
+      fechaInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorFecha.style.display = 'none';
+      fechaInput.classList.remove('is-invalid');
+    }
+
+    if(!valid){
+      event.preventDefault();
+    }
+  });
+
+  // Validaciones para ocultar mensajes mientras se corrige
+  ['nombre', 'correo', 'departamento', 'fecha_registro'].forEach(function(id){
+    const element = document.getElementById(id);
+    const errorElement = document.getElementById('error-' + id);
+    const eventType = (id === 'departamento' || id === 'fecha_registro') ? 'change' : 'input';
+
+    element.addEventListener(eventType, function(){
+      if(id === 'correo'){
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(this.value.trim() && emailPattern.test(this.value.trim())){
+          errorElement.style.display = 'none';
+          this.classList.remove('is-invalid');
+        }
+      } else if(id === 'fecha_registro'){
+        const today = new Date().toISOString().split('T')[0];
+        if(this.value === today){
+          errorElement.style.display = 'none';
+          this.classList.remove('is-invalid');
+        }
+      } else {
+        if(this.value.trim() !== ''){
+          errorElement.style.display = 'none';
+          this.classList.remove('is-invalid');
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}Categorias{% endblock %}
+
+{% block content %}
+<h2>Categorías</h2>
+<a href="{% url 'categoria_create' %}" 
+   style="display:inline-block;
+          background-color:#28a745; 
+          color:#fff; 
+          padding:8px 16px; 
+          border-radius:4px; 
+          text-decoration:none; 
+          font-weight:600;
+          margin-bottom:12px;">
+   Crear nueva categoría
+</a>
+<table id="categorias" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Fecha Creación</th>
+            <th>Fecha Actualización</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in categorias %}
+            <tr>
+                <td>{{ c.id_categoria }}</td>
+                <td>{{ c.nombre }}</td>
+                <td>{{ c.descripcion }}</td>
+                <td>{{ c.estado }}</td>
+                <td>{{ c.fecha_creacion }}</td>
+                <td>{{ c.fecha_actualizacion }}</td>
+                <td>
+                    <a href="{% url 'categoria_edit' c.id_categoria %}" 
+                       style="background-color:#ffc107;
+                              color:#212529;
+                              padding:6px 12px;
+                              border-radius:4px;
+                              text-decoration:none;
+                              font-weight:600;
+                              margin-right:8px;">
+                        Editar
+                    </a>
+                    <a href="#" class="btn-eliminar" data-url="{% url 'categoria_delete' c.id_categoria %}" 
+                       style="background-color:#dc3545;
+                              color:#fff;
+                              padding:6px 12px;
+                              border-radius:4px;
+                              text-decoration:none;
+                              font-weight:600;
+                              cursor:pointer;">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        // Inicializar DataTable con orden descendente por ID (primera columna)
+        var table = $('#categorias').DataTable({
+            "order": [[0, "desc"]]
+        });
+
+        // Mostrar mensajes de éxito con iziToast
+        {% if messages %}
+            {% for message in messages %}
+                iziToast.success({
+                    title: '¡Listo!',
+                    message: '{{ message }}',
+                    position: 'topRight'
+                });
+            {% endfor %}
+        {% endif %}
+
+        // Confirmación con iziToast al eliminar
+        $('.btn-eliminar').on('click', function(e){
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            iziToast.question({
+                timeout: 7000,
+                close: false,
+                overlay: true,
+                displayMode: 'once',
+                title: '¿Estás seguro?',
+                message: 'Esta acción no se puede deshacer.',
+                position: 'center',
+                buttons: [
+                    ['<button>Eliminar</button>', function(instance, toast){
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        window.location.href = url;
+                    }, true],
+                    ['<button>Cancelar</button>', function(instance, toast){
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]
+            });
+        });
+    });
+</script>
+{% endblock %}

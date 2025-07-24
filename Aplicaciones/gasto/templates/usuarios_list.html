@@ -1,0 +1,125 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<h2>Usuarios</h2>
+<a href="{% url 'usuario_create' %}"
+   style="display:inline-block;
+          background-color:#28a745;
+          color:#fff;
+          padding:8px 16px;
+          border-radius:4px;
+          text-decoration:none;
+          font-weight:600;
+          margin-bottom:12px;
+          transition: background-color 0.3s ease;"
+   onmouseover="this.style.backgroundColor='#1e7e34';"
+   onmouseout="this.style.backgroundColor='#28a745';">
+  Crear nuevo usuario
+</a>
+<table id="usuarios" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Departamento</th>
+            <th>Fecha de Registro</th>
+            <th>Fecha de Creacion</th>
+            <th>Acciones</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.id_usuario }}</td>
+            <td>{{ u.nombre }}</td>
+            <td>{{ u.correo }}</td>
+            <td>{{ u.departamento }}</td>
+            <td>{{ u.fecha_registro }}</td>
+            <td>{{ u.fecha_creacion }}</td>
+            <td>
+                <a href="{% url 'usuario_edit' u.id_usuario %}"
+                   style="display:inline-block;
+                          background-color:#ffc107;
+                          color:#212529;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          margin-right:8px;
+                          cursor:pointer;
+                          transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#e0a800';"
+                   onmouseout="this.style.backgroundColor='#ffc107';">
+                  Editar
+                </a>
+                <a href="#" class="btn-eliminar" data-url="{% url 'usuario_delete' u.id_usuario %}"
+                   style="display:inline-block;
+                          background-color:#dc3545;
+                          color:#fff;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          cursor:pointer;
+                          transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#a71d2a';"
+                   onmouseout="this.style.backgroundColor='#dc3545';">
+                  Eliminar
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        // Inicializar DataTable con orden descendente por la columna de ID (índice 0)
+        var table = $('#usuarios').DataTable({
+            "order": [[0, "desc"]]
+        });
+
+        // Mostrar mensajes de éxito con iziToast
+        {% if messages %}
+            {% for message in messages %}
+                iziToast.success({
+                    title: '¡Listo!',
+                    message: '{{ message }}',
+                    position: 'topRight'
+                });
+            {% endfor %}
+        {% endif %}
+
+        // Confirmación para eliminar con iziToast
+        $('.btn-eliminar').click(function(e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            iziToast.question({
+                timeout: 7000,
+                close: false,
+                overlay: true,
+                displayMode: 'once',
+                title: '¿Estás seguro?',
+                message: 'Esta acción no se puede deshacer.',
+                position: 'center',
+                buttons: [
+                    ['<button>Eliminar</button>', function(instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        window.location.href = url;
+                    }, true],
+                    ['<button>Cancelar</button>', function(instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }]
+                ]
+            });
+        });
+    });
+</script>
+{% endblock %}

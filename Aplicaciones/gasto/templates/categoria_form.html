@@ -1,0 +1,120 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}{{ accion }} Categoría{% endblock %}
+
+{% block content %}
+<style>
+  .form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .error-text {
+    color: red;
+    font-size: 0.875em;
+    display: none;
+  }
+</style>
+
+<div class="form-container">
+  <h2 class="mb-4 text-center">{{ accion }} Categoría</h2>
+  <form id="categoriaForm" method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre:</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" 
+        value="{{ categoria.nombre|default_if_none:'' }}">
+      <div class="error-text" id="error-nombre">Por favor, ingresa el nombre.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción:</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ categoria.descripcion|default_if_none:'' }}</textarea>
+      <div class="error-text" id="error-descripcion">Por favor, ingresa la descripción.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado:</label>
+      <select class="form-select" id="estado" name="estado">
+        <option value="">-- Selecciona un estado --</option>
+        <option value="Activo" {% if categoria.estado == "Activo" %}selected{% endif %}>Activo</option>
+        <option value="Inactivo" {% if categoria.estado == "Inactivo" %}selected{% endif %}>Inactivo</option>
+      </select>
+      <div class="error-text" id="error-estado">Por favor, selecciona un estado.</div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">{{ accion }}</button>
+      <a href="{% url 'categorias_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.getElementById('categoriaForm').addEventListener('submit', function(event){
+    let valid = true;
+
+    // Nombre
+    const nombreInput = document.getElementById('nombre');
+    const errorNombre = document.getElementById('error-nombre');
+    if(!nombreInput.value.trim()){
+      errorNombre.style.display = 'block';
+      nombreInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorNombre.style.display = 'none';
+      nombreInput.classList.remove('is-invalid');
+    }
+
+    // Descripción
+    const descripcionInput = document.getElementById('descripcion');
+    const errorDescripcion = document.getElementById('error-descripcion');
+    if(!descripcionInput.value.trim()){
+      errorDescripcion.style.display = 'block';
+      descripcionInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorDescripcion.style.display = 'none';
+      descripcionInput.classList.remove('is-invalid');
+    }
+
+    // Estado
+    const estadoInput = document.getElementById('estado');
+    const errorEstado = document.getElementById('error-estado');
+    if(!estadoInput.value){
+      errorEstado.style.display = 'block';
+      estadoInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorEstado.style.display = 'none';
+      estadoInput.classList.remove('is-invalid');
+    }
+
+    if(!valid){
+      event.preventDefault();
+    }
+  });
+
+  // Validación dinámica para ocultar errores mientras se escribe o selecciona
+  ['nombre', 'descripcion', 'estado'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', function(){
+      if(this.value.trim() !== ''){
+        document.getElementById('error-' + id).style.display = 'none';
+        this.classList.remove('is-invalid');
+      }
+    });
+    // Para select se usa 'change' en lugar de 'input'
+    if(id === 'estado'){
+      document.getElementById(id).addEventListener('change', function(){
+        if(this.value !== ''){
+          document.getElementById('error-' + id).style.display = 'none';
+          this.classList.remove('is-invalid');
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

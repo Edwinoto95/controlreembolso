@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% block title %}Control De Gatos - Inicio{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}" />
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}" />
+
+    <!-- Favicons -->
+    <link href="{% static 'plantilla/assets/img/favicon.png' %}" rel="icon" />
+    <link href="{% static 'plantilla/assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'plantilla/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'plantilla/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet" />
+    <link href="{% static 'plantilla/assets/vendor/aos/aos.css' %}" rel="stylesheet" />
+    <link href="{% static 'plantilla/assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'plantilla/assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css">
+    <!-- DataTables Responsive CSS (opcional, si lo usas) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+
+    <!-- IziToast CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+
+    <!-- IziToast CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'plantilla/assets/css/main.css' %}" rel="stylesheet" />
+
+    <style>
+      main {
+        margin-top: 90px; /* Ajusta para que no tape el header fijo */
+      }
+    </style>
+
+    <!-- =======================================================
+    * Template Name: eBusiness
+    * Template URL: https://bootstrapmade.com/ebusiness-bootstrap-corporate-template/
+    * Updated: Aug 07 2024 with Bootstrap v5.3.3
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+  </head>
+  <body>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+      <div class="container-fluid container-xl position-relative d-flex align-items-center">
+        <a href="{% url 'inicio' %}" class="logo d-flex align-items-center me-auto">
+          <!-- <img src="{% static 'plantilla/assets/img/logo.png' %}" alt="Logo" /> -->
+          <h1 class="sitename">GastoCorp</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li>
+              <a href="{% url 'inicio' %}" class="{% block nav_inicio %}{% if request.resolver_match.url_name == 'inicio' %}active{% endif %}{% endblock %}">Inicio</a>
+            </li>
+            <li>
+              <a href="{% url 'usuarios_list' %}" class="{% block nav_usuarios %}{% if request.resolver_match.url_name == 'usuarios_list' %}active{% endif %}{% endblock %}">Usuarios</a>
+            </li>
+            <li>
+              <a href="{% url 'categorias_list' %}" class="{% block nav_categorias %}{% if request.resolver_match.url_name == 'categorias_list' %}active{% endif %}{% endblock %}">Categorias</a>
+            </li>
+            <li>
+              <a href="{% url 'gastos_list' %}" class="{% block nav_gastos %}{% if request.resolver_match.url_name == 'gastos_list' %}active{% endif %}{% endblock %}">Gastos</a>
+            </li>
+            <li>
+              <a href="{% url 'documentos_list' %}" class="{% block nav_documentos %}{% if request.resolver_match.url_name == 'documentos_list' %}active{% endif %}{% endblock %}">Documentos</a>
+            </li>
+            <li>
+              <a href="{% url 'reembolsos_list' %}" class="{% block nav_reembolsos %}{% if request.resolver_match.url_name == 'reembolsos_list' %}active{% endif %}{% endblock %}">Reembolsos</a>
+            </li>
+            <li>
+              <a href="{% url 'detalle_reembolso_list' %}" class="{% block nav_detalle_reembolsos %}{% if request.resolver_match.url_name == 'detalle_reembolso_list' %}active{% endif %}{% endblock %}">Detalle Reembolsos</a>
+            </li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn-getstarted" href="#about" style="opacity: 0;">Get Started</a>
+      </div>
+    </header>
+
+    <main>
+      {% block content %}
+      <!-- Contenido que se definirá en cada plantilla hija -->
+      {% endblock %}
+    </main>
+
+
+    <footer id="footer" class="footer dark-background">
+
+    <div class="container footer-top">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6 footer-about">
+        <a href="{% url 'inicio' %}" class="d-flex align-items-center">
+          <span class="sitename">Control de Gastos y Reembolsos</span>
+        </a>
+        <div class="footer-contact pt-3">
+          <p>Av. Empresarial 456</p>
+          <p>Ciudad, País</p>
+          <p class="mt-3"><strong>Teléfono:</strong> <span>+593 2 555 1234</span></p>
+          <p><strong>Email:</strong> <span>contacto@controlgastos.com</span></p>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Enlaces útiles</h4>
+        <ul>
+          <li><i class="bi bi-chevron-right"></i> <a href="{% url 'inicio' %}">Inicio</a></li>
+          <li><i class="bi bi-chevron-right"></i> <a href="{% url 'usuarios_list' %}">Usuarios</a></li>
+          <li><i class="bi bi-chevron-right"></i> <a href="{% url 'categorias_list' %}">Categorías</a></li>
+          <li><i class="bi bi-chevron-right"></i> <a href="{% url 'gastos_list' %}">Gastos</a></li>
+        </ul>
+      </div>
+
+     
+
+      <div class="col-lg-4 col-md-12">
+        <h4>Síguenos</h4>
+        <p>Conéctate con nosotros para estar al día en la gestión eficiente de gastos y reembolsos empresariales.</p>
+        <div class="social-links d-flex">
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+    <p>
+      © 2025 <strong class="px-1 sitename">Control de Gastos y Reembolsos</strong> - Todos los derechos reservados.
+    </p>
+    <div class="credits">
+      Desarrollo de software 
+      <a href="https://www.utc.edu.ec" target="_blank" rel="noopener">UTC</a>
+    </div>
+    </div>
+  
+    </footer>
+
+
+    
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"
+      ><i class="bi bi-arrow-up-short"></i
+    ></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'plantilla/assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'plantilla/assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+    <!-- jQuery (NECESARIO PARA DATATABLES Y OTRAS LIBRERÍAS) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+    <!-- DataTables Responsive JS (opcional) -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+
+    <!-- IziToast JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+
+    <!-- IziToast JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'plantilla/assets/js/main.js' %}"></script>
+
+    <script>
+      // DataTables default config + utility functions
+      $(document).ready(function() {
+        $.extend(true, $.fn.dataTable.defaults, {
+          language: { url: "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json" },
+          pageLength: 10,
+          lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+          responsive: true,
+          autoWidth: false
+        });
+
+        window.initDataTable = function(selector, options = {}) {
+          const defaultOptions = {
+            order: [[0, 'desc']],
+            columnDefs: [{ targets: [0], orderSequence: ["desc", "asc"] }],
+            drawCallback: function() { console.log('Tabla redibujada'); }
+          };
+          const finalOptions = $.extend(true, {}, defaultOptions, options);
+          return $(selector).DataTable(finalOptions);
+        };
+
+        window.addRowToTop = function(table, rowData) {
+          table.row.add(rowData).draw(false);
+          table.order([0, 'desc']).draw(); 
+        };
+
+        window.updateTableRow = function(table, rowIndex, newData) {
+          table.row(rowIndex).data(newData).draw();
+        };
+
+        window.deleteTableRow = function(table, rowIndex) {
+          table.row(rowIndex).remove().draw();
+        };
+      });
+
+      function showNotification(type, title, message) {
+        if (typeof iziToast !== 'undefined') {
+          iziToast[type]({
+            title: title,
+            message: message,
+            position: 'topRight',
+            timeout: 5000,
+            progressBar: true,
+            closeOnClick: true
+          });
+        } else {
+          console.error("iziToast no está cargado. No se puede mostrar la notificación.");
+          alert(`${title}: ${message}`);
+        }
+      }
+
+      function confirmDelete(message, callback) {
+        if (confirm(message || '¿Estás seguro de que deseas eliminar este elemento?')) {
+          callback();
+        }
+      }
+
+      function handleAjaxError(xhr, status, error) {
+        console.error('Error AJAX:', error);
+        console.error('Response Text:', xhr.responseText);
+        let errorMessage = 'Ocurrió un error al procesar la solicitud.';
+        try {
+          const errorJson = JSON.parse(xhr.responseText);
+          if (errorJson.message) {
+            errorMessage = errorJson.message;
+          } else if (errorJson.detail) {
+            errorMessage = errorJson.detail;
+          }
+        } catch (e) {
+          if (xhr.status === 0) {
+            errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+          } else if (xhr.status == 404) {
+            errorMessage = 'La URL solicitada no fue encontrada [404]';
+          } else if (xhr.status == 500) {
+            errorMessage = 'Error interno del servidor [500]';
+          } else if (error === 'parsererror') {
+            errorMessage = 'Error al parsear la respuesta JSON.';
+          } else if (error === 'timeout') {
+            errorMessage = 'La solicitud ha excedido el tiempo de espera.';
+          } else if (error === 'abort') {
+            errorMessage = 'La solicitud AJAX fue abortada.';
+          }
+        }
+        showNotification('error', 'Error', errorMessage);
+      }
+
+      // CSRF Setup for AJAX (Django)
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i=0; i<cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      const csrftoken = getCookie('csrftoken');
+      
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        }
+      });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>
