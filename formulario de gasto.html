@@ -1,0 +1,14 @@
+<form method="POST" action="/gastos/guardar">
+  <h5>Registrar Gasto</h5>
+  <input type="number" name="monto" step="0.01" placeholder="Monto del gasto" required>
+  <input type="date" name="fecha_gasto" required>
+  <select name="id_usuario" required>
+    <option value="">Seleccione Usuario</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <select name="id_categoria" required>
+    <option value="">Seleccione Categoría</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <button type="submit">Guardar</button>
+</form>
