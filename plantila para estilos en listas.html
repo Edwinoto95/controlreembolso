@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Objetos{% endblock %}
+
+{% block content %}
+<h1>Lista de {{ nombre_modelo }}</h1>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            {% for campo in campos %}
+                <th>{{ campo }}</th>
+            {% endfor %}
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for objeto in objetos %}
+        <tr>
+            {% for campo in campos %}
+                <td>{{ objeto|attr:campo }}</td>
+            {% endfor %}
+            <td>
+                <a href="{% url 'editar' objeto.id %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'eliminar' objeto.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'crear' %}" class="btn btn-primary">Crear nuevo</a>
+{% endblock %}
