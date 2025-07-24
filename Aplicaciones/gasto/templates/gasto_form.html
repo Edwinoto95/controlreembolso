@@ -1,0 +1,180 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}{{ accion }} Gasto{% endblock %}
+
+{% block content %}
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .error-text {
+    color: red;
+    font-size: 0.875em;
+    display: none;
+  }
+</style>
+
+<div class="form-container">
+  <h2 class="mb-4 text-center">{{ accion }} Gasto</h2>
+
+  <form id="gastoForm" method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_usuario" class="form-label">Usuario:</label>
+      <select class="form-select" id="id_usuario" name="id_usuario" required>
+        <option value="">-- Selecciona usuario --</option>
+        {% for usuario in usuarios %}
+          <option value="{{ usuario.id_usuario }}"
+            {% if gasto and gasto.id_usuario.id_usuario == usuario.id_usuario %}selected{% endif %}>
+            {{ usuario.nombre }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="error-text" id="error-id_usuario">Por favor, selecciona un usuario.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_categoria" class="form-label">Categoría:</label>
+      <select class="form-select" id="id_categoria" name="id_categoria" required>
+        <option value="">-- Selecciona categoría --</option>
+        {% for categoria in categorias %}
+          <option value="{{ categoria.id_categoria }}"
+            {% if gasto and gasto.id_categoria.id_categoria == categoria.id_categoria %}selected{% endif %}>
+            {{ categoria.nombre }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="error-text" id="error-id_categoria">Por favor, selecciona una categoría.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="monto" class="form-label">Monto:</label>
+      <input type="number" step="0.01" class="form-control" id="monto" name="monto"
+        value="{% if gasto.monto is not None %}{{ gasto.monto }}{% endif %}" required>
+      <div class="error-text" id="error-monto">Por favor, ingresa un monto válido mayor a 0.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="fecha_gasto" class="form-label">Fecha del gasto:</label>
+      <input type="date" class="form-control" id="fecha_gasto" name="fecha_gasto"
+        value="{{ gasto.fecha_gasto|default:'' }}" max="{{ today }}" required>
+      <div class="error-text" id="error-fecha_gasto">Por favor, ingresa una fecha válida no futura.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción:</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ gasto.descripcion|default:'' }}</textarea>
+      <div class="error-text" id="error-descripcion">Por favor, ingresa una descripción.</div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">{{ accion }}</button>
+      <a href="{% url 'gastos_list' %}" class="btn btn-secondary">Volver</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Poner la fecha máxima del input fecha_gasto en hoy desde JS si no viene de backend
+  (function(){
+    const fechaInput = document.getElementById('fecha_gasto');
+    if(!fechaInput.max){
+      const today = new Date().toISOString().split('T')[0];
+      fechaInput.max = today;
+    }
+  })();
+
+  document.getElementById('gastoForm').addEventListener('submit', function(event){
+    let valid = true;
+
+    // Usuario
+    const idUsuario = document.getElementById('id_usuario');
+    const errorIdUsuario = document.getElementById('error-id_usuario');
+    if(!idUsuario.value){
+      errorIdUsuario.style.display = 'block';
+      idUsuario.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorIdUsuario.style.display = 'none';
+      idUsuario.classList.remove('is-invalid');
+    }
+
+    // Categoría
+    const idCategoria = document.getElementById('id_categoria');
+    const errorIdCategoria = document.getElementById('error-id_categoria');
+    if(!idCategoria.value){
+      errorIdCategoria.style.display = 'block';
+      idCategoria.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorIdCategoria.style.display = 'none';
+      idCategoria.classList.remove('is-invalid');
+    }
+
+    // Monto
+    const montoInput = document.getElementById('monto');
+    const errorMonto = document.getElementById('error-monto');
+    const montoVal = parseFloat(montoInput.value);
+    if(!montoInput.value || isNaN(montoVal) || montoVal <= 0){
+      errorMonto.style.display = 'block';
+      montoInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorMonto.style.display = 'none';
+      montoInput.classList.remove('is-invalid');
+    }
+
+    // Fecha gasto
+    const fechaInput = document.getElementById('fecha_gasto');
+    const errorFecha = document.getElementById('error-fecha_gasto');
+    const fechaVal = new Date(fechaInput.value);
+    const today = new Date();
+    today.setHours(0,0,0,0); // Ignorar horas
+
+    if(!fechaInput.value || fechaVal > today || fechaInput.value.trim() === ''){
+      errorFecha.style.display = 'block';
+      fechaInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorFecha.style.display = 'none';
+      fechaInput.classList.remove('is-invalid');
+    }
+
+    // Descripción
+    const descripcionInput = document.getElementById('descripcion');
+    const errorDescripcion = document.getElementById('error-descripcion');
+    if(!descripcionInput.value.trim()){
+      errorDescripcion.style.display = 'block';
+      descripcionInput.classList.add('is-invalid');
+      valid = false;
+    } else {
+      errorDescripcion.style.display = 'none';
+      descripcionInput.classList.remove('is-invalid');
+    }
+
+    if(!valid){
+      event.preventDefault();
+    }
+  });
+
+  // Validación dinámica para ocultar errores mientras se escribe o selecciona
+  ['id_usuario', 'id_categoria', 'monto', 'fecha_gasto', 'descripcion'].forEach(function(id) {
+    const element = document.getElementById(id);
+    const errorElement = document.getElementById('error-' + id);
+    const eventType = (id === 'id_usuario' || id === 'id_categoria' || id === 'fecha_gasto') ? 'change' : 'input';
+
+    element.addEventListener(eventType, function() {
+      if (element.value && (id !== 'monto' || parseFloat(element.value) > 0) && (id !== 'fecha_gasto' || new Date(element.value) <= new Date())) {
+        errorElement.style.display = 'none';
+        element.classList.remove('is-invalid');
+      }
+    });
+  });
+</script>
+{% endblock %}
