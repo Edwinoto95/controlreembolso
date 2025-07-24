@@ -1,0 +1,14 @@
+<form method="POST" action="/documentos/guardar" enctype="multipart/form-data">
+  <h5>Adjuntar Documento</h5>
+  <select name="id_gasto" required>
+    <option value="">Seleccione Gasto</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <select name="tipo" required>
+    <option value="Factura">Factura</option>
+    <option value="Boleta">Boleta</option>
+    <option value="Voucher">Voucher</option>
+  </select>
+  <input type="file" name="archivo" accept="application/pdf,image/*" required>
+  <button type="submit">Subir</button>
+</form>
