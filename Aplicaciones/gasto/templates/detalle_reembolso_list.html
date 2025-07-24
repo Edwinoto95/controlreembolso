@@ -1,0 +1,118 @@
+{% extends 'plantilla.html' %}
+
+{% block title %}Detalles de Reembolso{% endblock %}
+
+{% block content %}
+<h2>Detalles de Reembolso</h2>
+<a href="{% url 'detalle_reembolso_create' %}" 
+   style="display:inline-block;
+          background-color:#28a745; 
+          color:#fff; 
+          padding:8px 16px; 
+          border-radius:4px; 
+          text-decoration:none; 
+          font-weight:600;
+          margin-bottom:12px;">
+  Crear nuevo detalle
+</a>
+<table id="detalle_reembolso" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Reembolso ID</th>
+            <th>Gasto Descripción</th>
+            <th>Monto Aprobado</th>
+            <th>Comentario</th>
+            <th>Fecha Creación</th>
+            <th>Fecha Actualización</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in detalles %}
+        <tr>
+            <td>{{ d.id_detalle }}</td>
+            <td>{{ d.id_reembolso.id_reembolso }}</td>
+            <td>{{ d.id_gasto.descripcion }}</td>
+            <td>{{ d.monto_aprobado }}</td>
+            <td>{{ d.comentario }}</td>
+            <td>{{ d.fecha_creacion }}</td>
+            <td>{{ d.fecha_actualizacion }}</td>
+            <td>
+                <a href="{% url 'detalle_reembolso_edit' d.id_detalle %}" 
+                   style="display:inline-block;
+                          background-color:#ffc107;
+                          color:#212529;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          margin-right:8px;">
+                   Editar
+                </a>
+                <a href="#" class="btn-eliminar" data-url="{% url 'detalle_reembolso_delete' d.id_detalle %}" 
+                   style="display:inline-block;
+                          background-color:#dc3545;
+                          color:#fff;
+                          padding:6px 12px;
+                          border-radius:4px;
+                          text-decoration:none;
+                          font-weight:600;
+                          cursor:pointer;">
+                   Eliminar
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+$(document).ready(function() {
+    // Inicializar DataTable con orden descendente por ID (primera columna, índice 0)
+    var table = $('#detalle_reembolso').DataTable({
+        "order": [[0, "desc"]]
+    });
+
+    // Si hay mensajes de éxito, mostrar con iziToast
+    {% if messages %}
+        {% for message in messages %}
+            iziToast.success({
+                title: '¡Listo!',
+                message: '{{ message }}',
+                position: 'topRight'
+            });
+        {% endfor %}
+    {% endif %}
+
+    // Confirmación de eliminación con iziToast
+    $('.btn-eliminar').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).data('url');
+
+        iziToast.question({
+            timeout: 7000,
+            close: false,
+            overlay: true,
+            displayMode: 'once',
+            title: '¿Estás seguro?',
+            message: 'Esta acción no se puede deshacer.',
+            position: 'center',
+            buttons: [
+                ['<button>Eliminar</button>', function (instance, toast) {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                    // Redirigir al URL de eliminación
+                    window.location.href = url;
+                }, true],
+                ['<button>Cancelar</button>', function (instance, toast) {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                }]
+            ]
+        });
+    });
+});
+</script>
+{% endblock %}
