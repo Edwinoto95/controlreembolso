@@ -1,0 +1,14 @@
+<form method="POST" action="/reembolsos/guardar">
+  <h5>Solicitar Reembolso</h5>
+  <select name="id_usuario" required>
+    <option value="">Seleccione Usuario</option>
+    <!-- Opciones dinámicas -->
+  </select>
+  <input type="date" name="fecha_solicitud" required>
+  <select name="estado">
+    <option value="Pendiente">Pendiente</option>
+    <option value="Aprobado">Aprobado</option>
+    <option value="Rechazado">Rechazado</option>
+  </select>
+  <button type="submit">Solicitar</button>
+</form>
