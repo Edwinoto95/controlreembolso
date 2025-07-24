@@ -1,0 +1,46 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">Panel de Indicadores Clave (KPIs)</h3>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card text-bg-info p-3">
+        <h5>Total de Usuarios: {{ total_usuarios }}</h5>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card text-bg-success p-3">
+        <h5>Gasto Total: ${{ total_gastos }}</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Gastos por Mes</div>
+    <div class="card-body">
+      <canvas id="gastosMesChart" height="100"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('gastosMesChart').getContext('2d');
+  const data = {
+    labels: [{% for item in gastos_mensuales %}'{{ item.mes }}',{% endfor %}],
+    datasets: [{
+      label: 'Gastos Mensuales',
+      data: [{% for item in gastos_mensuales %}{{ item.total }},{% endfor %}],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgb(54, 162, 235)',
+      borderWidth: 1
+    }]
+  };
+  new Chart(ctx, {
+    type: 'line',
+    data: data
+  });
+</script>
+{% endblock %}
+ 
